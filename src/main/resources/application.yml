@@ -1,0 +1,16 @@
+
+spring:
+  application:
+    name: DoctorServices
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hospitalerp
+    username: postgres
+    password: root
+
+server:
+  port: 8080
