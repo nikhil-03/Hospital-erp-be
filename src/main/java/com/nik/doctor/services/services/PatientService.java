@@ -1,5 +1,6 @@
 package com.nik.doctor.services.services;
 
+import com.nik.doctor.services.DTO.AppointmentPatientDTO;
 import com.nik.doctor.services.entities.Patient;
 
 import java.util.List;
@@ -10,4 +11,6 @@ public interface PatientService {
     List<Patient> getAllPatient();
 
     Patient getPatientById(String id);
+
+    List<AppointmentPatientDTO> getAllPatientForAppointment();
 }

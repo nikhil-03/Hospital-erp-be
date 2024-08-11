@@ -1,6 +1,7 @@
 package com.nik.doctor.services.controllers;
 
 
+import com.nik.doctor.services.DTO.AppointmentPatientDTO;
 import com.nik.doctor.services.entities.Patient;
 import com.nik.doctor.services.services.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,11 @@ public class PatientController {
     public ResponseEntity<List<Patient>> getAllPatient(){
         List<Patient> p = patientService.getAllPatient();
         return ResponseEntity.ok(p);
+    }
+    @GetMapping("/appointment")
+    public ResponseEntity<List<AppointmentPatientDTO>> getPatientsForAppointment(){
+        List<AppointmentPatientDTO> appointmentPatientDTOS = patientService.getAllPatientForAppointment();
+        return ResponseEntity.ok(appointmentPatientDTOS);
     }
     @GetMapping("/{patientId}")
     public ResponseEntity<Patient> getPatientById(@PathVariable String patientId){

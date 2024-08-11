@@ -1,5 +1,7 @@
 package com.nik.doctor.services.services.impl;
 
+import com.nik.doctor.services.DTO.AppointmentDoctorDTO;
+import com.nik.doctor.services.DTO.DoctorDTO;
 import com.nik.doctor.services.entities.Appointment;
 import com.nik.doctor.services.entities.Doctor;
 import com.nik.doctor.services.entities.DoctorVisitDay;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class DoctorServiceImpl implements DoctorService {
@@ -47,5 +50,24 @@ public class DoctorServiceImpl implements DoctorService {
     @Override
     public Doctor getDoctor(String doctorId) {
         return doctorRepository.findById(doctorId).orElseThrow(()->new ResourceNotFoundException("doctor with "+doctorId));
+    }
+
+    @Override
+    public List<AppointmentDoctorDTO> getAllDoctorForAppointment() {
+        List<Doctor> d = doctorRepository.findAll();
+        return d.stream().map(this::convertToAppointmentDTO).collect(Collectors.toList());
+    }
+    public AppointmentDoctorDTO convertToAppointmentDTO(Doctor doctor){
+        AppointmentDoctorDTO appointmentDoctorDTO=new AppointmentDoctorDTO();
+
+        appointmentDoctorDTO.setDoctorId(doctor.getDoctorId());
+        appointmentDoctorDTO.setName(doctor.getName());
+        appointmentDoctorDTO.setSpecialization(doctor.getSpecialization());
+        appointmentDoctorDTO.setInTiming(doctor.getInTiming());
+        List<String> daysOfWeek = doctor.getAvailability().stream()
+                .map(DoctorVisitDay::getDayOfWeek)
+                .collect(Collectors.toList());
+        appointmentDoctorDTO.setDays(daysOfWeek);
+        return appointmentDoctorDTO;
     }
 }
