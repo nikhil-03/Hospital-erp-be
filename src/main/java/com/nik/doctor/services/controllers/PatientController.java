@@ -1,8 +1,8 @@
 package com.nik.doctor.services.controllers;
 
 
-import com.nik.doctor.services.DTO.AppointmentPatientDTO;
 import com.nik.doctor.services.entities.Patient;
+import com.nik.doctor.services.DTO.AppointmentPatientDTO;
 import com.nik.doctor.services.services.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

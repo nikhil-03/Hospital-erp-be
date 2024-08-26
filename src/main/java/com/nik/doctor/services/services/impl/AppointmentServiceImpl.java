@@ -1,8 +1,13 @@
 package com.nik.doctor.services.services.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.nik.doctor.services.DTO.AppointmentDTO;
 import com.nik.doctor.services.DTO.DoctorDTO;
 import com.nik.doctor.services.DTO.PatientDTO;
+import com.nik.doctor.services.config.AppConstants;
 import com.nik.doctor.services.entities.Appointment;
 import com.nik.doctor.services.entities.Doctor;
 import com.nik.doctor.services.entities.Patient;
@@ -11,9 +16,8 @@ import com.nik.doctor.services.repositories.AppointmentRepository;
 import com.nik.doctor.services.repositories.DoctorRepository;
 import com.nik.doctor.services.repositories.PatientRepository;
 import com.nik.doctor.services.services.AppointmentService;
-import com.nik.doctor.services.services.DoctorService;
-import com.nik.doctor.services.services.PatientService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,6 +32,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     DoctorRepository doctorRepository;
     @Autowired
     PatientRepository patientRepository;
+    @Autowired
+    KafkaTemplate<String,Object> kafkaTemplate;
+
     @Override
     public Appointment addAppointment(Appointment appointment) {
        String id =UUID.randomUUID().toString();
@@ -52,6 +59,25 @@ public class AppointmentServiceImpl implements AppointmentService {
     public AppointmentDTO getAppointmentById(String id) {
         return convertToDTO(appointmentRepository.findById(id).orElseThrow(()->new ResourceNotFoundException("appointment not found by ID "+id)));
     }
+
+    @Override
+    public void addAppointmentKafkaService(Appointment appointment) {
+        String appointmentJson = convertToJson(convertToDTO(appointment));
+        kafkaTemplate.send(AppConstants.APPOINTMENT_TOPIC_NAME, appointmentJson);
+    }
+    private String convertToJson(AppointmentDTO appointmentDTO) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new JavaTimeModule());
+
+            // Optionally, set the date format (ISO is the default)
+            objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            return objectMapper.writeValueAsString(appointmentDTO);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Failed to convert AppointmentDTO to JSON", e);
+        }
+    }
+
     private AppointmentDTO convertToDTO(Appointment appointment) {
         DoctorDTO doctorDTO = new DoctorDTO();
         doctorDTO.setDoctorId(appointment.getDoctor().getDoctorId());
@@ -71,9 +97,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointmentDTO.setDescription(appointment.getDescription());
         appointmentDTO.setDoctor(doctorDTO);
         appointmentDTO.setPatient(patientDTO);
-
-
-
 
         return appointmentDTO;
     }

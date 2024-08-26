@@ -1,17 +1,19 @@
 package com.nik.doctor.services.services.impl;
 
+import com.nik.doctor.services.exceptions.ResourceNotFoundException;
 import com.nik.doctor.services.DTO.AppointmentDoctorDTO;
-import com.nik.doctor.services.DTO.DoctorDTO;
+import com.nik.doctor.services.services.DoctorService;
+import com.nik.doctor.services.config.AppConstants;
 import com.nik.doctor.services.entities.Appointment;
 import com.nik.doctor.services.entities.Doctor;
 import com.nik.doctor.services.entities.DoctorVisitDay;
-import com.nik.doctor.services.exceptions.ResourceNotFoundException;
 import com.nik.doctor.services.repositories.DoctorRepository;
-import com.nik.doctor.services.services.DoctorService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
 public class DoctorServiceImpl implements DoctorService {
     @Autowired
     private DoctorRepository doctorRepository;
+    @Autowired
+    KafkaTemplate<String,String> kafkaTemplate;
 
     @Override
     @Transactional
@@ -44,6 +48,7 @@ public class DoctorServiceImpl implements DoctorService {
     }
     @Override
     public List<Doctor> getAllDoctor() {
+
         return doctorRepository.findAll();
     }
 
@@ -57,6 +62,13 @@ public class DoctorServiceImpl implements DoctorService {
         List<Doctor> d = doctorRepository.findAll();
         return d.stream().map(this::convertToAppointmentDTO).collect(Collectors.toList());
     }
+
+    @Override
+    public void addDoctorApiHitKafka() {
+        kafkaTemplate.send(AppConstants.DOCTOR_API_HIT_TOPIC_NAME, LocalTime.now().toString());
+    }
+
+
     public AppointmentDoctorDTO convertToAppointmentDTO(Doctor doctor){
         AppointmentDoctorDTO appointmentDoctorDTO=new AppointmentDoctorDTO();
 

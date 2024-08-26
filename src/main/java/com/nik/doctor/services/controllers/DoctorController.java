@@ -8,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.Doc;
 import java.util.List;
 
 @RestController
@@ -24,6 +23,7 @@ public class DoctorController {
     }
     @GetMapping
     public ResponseEntity<List<Doctor>> getAllDoctors(){
+        doctorService.addDoctorApiHitKafka();
         List<Doctor> d = doctorService.getAllDoctor();
         return ResponseEntity.ok(d);
     }

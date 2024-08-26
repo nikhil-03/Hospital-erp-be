@@ -1,5 +1,6 @@
 package com.nik.doctor.services.controllers;
 
+
 import com.nik.doctor.services.DTO.AppointmentDTO;
 import com.nik.doctor.services.entities.Appointment;
 import com.nik.doctor.services.services.AppointmentService;
@@ -16,9 +17,11 @@ public class AppointmentController {
     @Autowired
     AppointmentService appointmentService;
 
+
     @PostMapping
     public ResponseEntity<Appointment> addAppointment(@RequestBody Appointment appointment){
         Appointment a =  appointmentService.addAppointment(appointment);
+        appointmentService.addAppointmentKafkaService(appointment);
         return ResponseEntity.status(HttpStatus.CREATED).body(a);
     }
     @GetMapping

@@ -1,12 +1,10 @@
 package com.nik.doctor.services.services.impl;
 
-import com.nik.doctor.services.DTO.AppointmentDoctorDTO;
-import com.nik.doctor.services.DTO.AppointmentPatientDTO;
 import com.nik.doctor.services.entities.Appointment;
-import com.nik.doctor.services.entities.Doctor;
 import com.nik.doctor.services.entities.Patient;
 import com.nik.doctor.services.exceptions.ResourceNotFoundException;
 import com.nik.doctor.services.repositories.PatientRepository;
+import com.nik.doctor.services.DTO.AppointmentPatientDTO;
 import com.nik.doctor.services.services.PatientService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;

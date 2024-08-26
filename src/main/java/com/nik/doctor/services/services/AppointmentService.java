@@ -11,4 +11,6 @@ public interface AppointmentService {
     List<AppointmentDTO> getAllAppointment();
 
     AppointmentDTO getAppointmentById(String id);
+
+    void addAppointmentKafkaService(Appointment appointment);
 }
