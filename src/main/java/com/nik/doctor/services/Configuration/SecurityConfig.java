@@ -12,7 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-public class SecurityConfig {
+public class SecurityConfig{
     @Autowired
     private JwtValidationFilter jwtValidationFilter;
 
@@ -20,7 +20,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/public/**").permitAll() // Public endpoints that don't require authentication
+                        .requestMatchers("/public/**","/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll() // Public endpoints that don't require authentication
                         .anyRequest().authenticated() // All other endpoints require authentication
                 )
                 .addFilterBefore(jwtValidationFilter, UsernamePasswordAuthenticationFilter.class); // Add your JWT validation filter
