@@ -1,5 +1,5 @@
 package com.nik.doctor.services.controllers;
-
+import com.nik.doctor.services.DTO.AllDoctorsDTO;
 import com.nik.doctor.services.DTO.AppointmentDoctorDTO;
 import com.nik.doctor.services.entities.Doctor;
 import com.nik.doctor.services.services.DoctorService;
@@ -22,9 +22,9 @@ public class DoctorController {
         return ResponseEntity.status(HttpStatus.CREATED).body(d1);
     }
     @GetMapping
-    public ResponseEntity<List<Doctor>> getAllDoctors(){
+    public ResponseEntity<List<AllDoctorsDTO>> getAllDoctors(){
         doctorService.addDoctorApiHitKafka();
-        List<Doctor> d = doctorService.getAllDoctor();
+        List<AllDoctorsDTO> d = doctorService.getAllDoctors();
         return ResponseEntity.ok(d);
     }
     @GetMapping("/appointment")

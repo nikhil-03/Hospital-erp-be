@@ -24,16 +24,15 @@ public class Doctor {
     private String name;
     private int age;
     private String specialization;
+    private String imageURL;
     private int experience;
     private String contactNo;
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)
-
     private List<DoctorVisitDay> availability;
     private LocalTime inTiming;
     private LocalTime outTiming;
     private String email;
     private String description;
     @OneToMany(mappedBy = "doctor",cascade = CascadeType.ALL) // field from appointment
-
     private List<Appointment> appointments;
 }
